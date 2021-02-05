@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
+	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"sync"
 	"time"
-	"flag"
 )
 
 var stepCount int
@@ -17,15 +17,15 @@ func logStep(args ...interface{}) {
 	stepLock.Lock()
 	defer stepLock.Unlock()
 	stepCount++
-	//args.unshift
-	args = append([]interface{}{fmt.Sprintf("%02d.",stepCount)}, args...)
+	args = append([]interface{}{fmt.Sprintf("%02d.", stepCount)}, args...)
 	log.Println(args...)
 }
 
 func main() {
-	requestCancelDelay  := flag.Duration("request-timeout",2 * time.Second ,"timeout for expiring request")
-	serverResponseDelay  := flag.Duration("server-delay",3 * time.Second ,"programmatic delay for debug server")
+	requestCancelDelay := flag.Duration("request-timeout", 2*time.Second, "timeout for expiring request")
+	serverResponseDelay := flag.Duration("server-delay", 3*time.Second, "programmatic delay for debug server")
 	flag.Parse()
+	logStep("starting cancel http request demo...")
 	httpServerDone := make(chan struct{})
 	gracefulExit := make(chan struct{})
 	svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
