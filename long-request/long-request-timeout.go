@@ -59,7 +59,7 @@ func main() {
 		// do requests to getData in Parallel to emulate "real world" scenario
 		var wg sync.WaitGroup
 		for j := 0; j < 5; j++ {
-			n := i*2 + j
+			n := i*5 + j
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
