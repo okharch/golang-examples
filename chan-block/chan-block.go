@@ -11,6 +11,8 @@ func main() {
 	// depending on bufSize of channel writing to it either blocks or not
 	// if its size is 0 it blocks, if it is at least one it does not
 	// this program demonstrates that
+	defer log.Println("Exiting from program")
+	log.Println("Program started")
 	var bufSize int
 	if len(os.Args) == 2 {
 		s, err := strconv.Atoi(os.Args[1])
@@ -25,11 +27,16 @@ func main() {
 		ch <- 1
 		notBlocked <- true
 	}()
-	select {
-	case <-time.After(time.Second):
-		log.Println("Blocked!")
-	case <-notBlocked:
-		log.Println("Not blocked!")
+	// looping while blocked in go routine
+	for {
+		select {
+		case <-time.After(time.Second):
+			log.Println("Blocked! Unblocking...")
+			<-ch
+		case <-notBlocked:
+			log.Println("Not blocked!")
+			return
+		}
 	}
 
 }
