@@ -2,21 +2,31 @@ package main
 
 import (
 	"log"
-
 	"time"
+	"os"
+	"strconv"
 )
 
 func main() {
-	ch := make(chan int, 1)
-	blocked := true
+	var bSize int
+	if (len(os.Args) == 2) {
+		s, err := strconv.Atoi(os.Args[1])
+		if err != nil {
+			s = 0
+		}
+		bSize = s
+	}
+	ch := make(chan int, bSize)
+	blocked := make(chan bool)
 	go func() {
 		ch <- 1
-		blocked = false
+		blocked <- false
 	}()
-	time.Sleep(time.Millisecond * 100)
-	if blocked {
+	select {
+	case <-time.After(time.Millisecond * 100):
 		log.Println("Blocked!")
-	} else {
+	case <-blocked:
 		log.Println("Not blocked!")
 	}
+
 }
