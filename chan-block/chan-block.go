@@ -8,15 +8,18 @@ import (
 )
 
 func main() {
-	var bSize int
+	// depending on bufSize of channel writing to it either blocks or not
+	// if its size is 0 it blocks, if it is at least one it does not
+	// this program demonstrates that
+	var bufSize int
 	if len(os.Args) == 2 {
 		s, err := strconv.Atoi(os.Args[1])
 		if err != nil {
 			s = 0
 		}
-		bSize = s
+		bufSize = s
 	}
-	ch := make(chan int, bSize)
+	ch := make(chan int, bufSize)
 	notBlocked := make(chan bool)
 	go func() {
 		ch <- 1
