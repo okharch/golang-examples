@@ -7,9 +7,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/streadway/amqp"
 	"log"
+	"os"
+	"os/signal"
 	"time"
+
+	"github.com/streadway/amqp"
 )
 
 var (
@@ -37,7 +40,15 @@ func main() {
 		time.Sleep(*lifetime)
 	} else {
 		log.Printf("running forever")
-		select {}
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt)
+	forever:
+		for {
+			select {
+			case <-c:
+				break forever
+			}
+		}
 	}
 
 	log.Printf("shutting down")
