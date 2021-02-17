@@ -42,6 +42,7 @@ func main() {
 		log.Printf("running forever")
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, os.Interrupt)
+		// blocks until Ctrl-C pressed
 		<-c
 	}
 
