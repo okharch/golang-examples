@@ -16,4 +16,10 @@ func main() {
 	failOnError(err, "Failed to connect to RabbitMQ")
 	log.Println("Connection established!")
 	defer conn.Close()
+	// The connection abstracts the socket connection, and takes care of protocol version negotiation and authentication and so on for us. Next we create a channel, which is where most of the API for getting things done resides:
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+	log.Println("channel established")
 }
